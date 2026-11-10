@@ -1,0 +1,431 @@
+﻿
+==> Locating psql
+Using C:\Program Files\PostgreSQL\18\bin\psql.exe
+
+==> Testing connection to localhost:5433 as postgres
+PostgreSQL 18.6 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit
+
+==> Dropping database cinemind_db (-Reset)
+DROP DATABASE
+
+==> 00_create_database.sql
+  database   | encoding 
+-------------+----------
+ cinemind_db | UTF8
+(1 row)
+
+
+==> 01_schema.sql
+
+==> 02_constraints_indexes.sql
+
+==> 03_functions.sql
+
+==> 04_triggers.sql
+
+==> 05_procedures.sql
+
+==> 06_views.sql
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_title_catalogue" does not exist, skipping
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_character_details" does not exist, skipping
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_event_details" does not exist, skipping
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_character_timeline" does not exist, skipping
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_character_arc_progress" does not exist, skipping
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/06_views.sql:10: NOTICE:  view "v_title_ratings" does not exist, skipping
+
+==> 07_seed_data.sql
+       table_name        | count 
+-------------------------+-------
+ universes               |     4
+ titles                  |    10
+ characters              |    25
+ character_relationships |    25
+ story_events            |    15
+ event_participants      |    39
+ character_arcs          |     7
+ arc_events              |    14
+ users                   |     3
+ reviews                 |     9
+(10 rows)
+
+
+==> 08_roles_permissions.sql
+      rolname      | rolsuper | rolcanlogin | rolcreatedb | rolcreaterole | rolconnlimit 
+-------------------+----------+-------------+-------------+---------------+--------------
+ cinemind_admin    | f        | f           | f           | f             |           -1
+ cinemind_app      | f        | t           | f           | f             |           20
+ cinemind_readonly | f        | f           | f           | f             |           -1
+(3 rows)
+
+   grantee    | table_name |           privileges           
+--------------+------------+--------------------------------
+ cinemind_app | audit_logs | INSERT, SELECT
+ cinemind_app | reviews    | DELETE, INSERT, SELECT, UPDATE
+ cinemind_app | roles      | SELECT
+(3 rows)
+
+
+==> Setting password for cinemind_app
+cinemind_app password set.
+
+==> 10_validation.sql
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:43: NOTICE:  PASS: 21 application tables exist
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:48: NOTICE:  PASS: 6 views exist
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:52: NOTICE:  PASS: procedures add_story_event and assign_user_role exist
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:61: NOTICE:  PASS: composite primary keys on the 6 junction tables
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:64: NOTICE:  PASS: >= 4 universes
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:65: NOTICE:  PASS: >= 8 titles
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:66: NOTICE:  PASS: >= 12 characters
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:67: NOTICE:  PASS: >= 8 relationships
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:68: NOTICE:  PASS: >= 8 story events
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:69: NOTICE:  PASS: >= 4 character arcs
+ check 
+-------
+ 
+(1 row)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:71: NOTICE:  PASS: a standalone title exists (NULL universe)
+
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:73: NOTICE:  PASS: a character has multiple arcs in one title
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:77: NOTICE:  PASS: every user has the Viewer role
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:83: NOTICE:  PASS: rating must be 1..5 (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:88: NOTICE:  PASS: one review per user per title (SQLSTATE 23505)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:91: NOTICE:  PASS: progress percentage must be 0..100 (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:94: NOTICE:  PASS: completed progress must be 100% (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:97: NOTICE:  PASS: bookmark needs exactly one target (none) (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:101: NOTICE:  PASS: bookmark needs exactly one target (two) (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:106: NOTICE:  PASS: duplicate title bookmark rejected (SQLSTATE 23505)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:110: NOTICE:  PASS: self relationship rejected (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:114: NOTICE:  PASS: duplicate character name within a universe rejected (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:119: NOTICE:  PASS: same character name allowed in a different universe
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:122: NOTICE:  PASS: foreign key: unknown universe rejected (SQLSTATE 23503)
+ expect_error 
+--------------
+ 
+(1 row)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:125: NOTICE:  PASS: RESTRICT: universe with titles cannot be deleted (SQLSTATE 23001)
+
+ expect_error 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:128: NOTICE:  PASS: invalid media type rejected (SQLSTATE 23514)
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:132: NOTICE:  PASS: event order must be unique within a title (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:135: NOTICE:  PASS: email must be lower case (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:141: NOTICE:  PASS: trigger: character from another universe cannot appear in a title (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:146: NOTICE:  PASS: trigger: participant must appear in the event title (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:151: NOTICE:  PASS: trigger: arc event must belong to the arc title (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:156: NOTICE:  PASS: trigger: cross-universe relationship rejected (SQLSTATE 23514)
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:164: NOTICE:  PASS: trigger: updated_at refreshed on UPDATE
+ check 
+-------
+ 
+(1 row)
+
+ set_config 
+------------
+ 1
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:172: NOTICE:  PASS: trigger: audit row written with acting user and old/new data
+ check 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:175: NOTICE:  PASS: trigger: password_hash never copied into audit_logs
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:180: NOTICE:  PASS: trigger: admin cannot self-assign Admin (SQLSTATE 42501)
+ check 
+-------
+ 
+(1 row)
+
+ expect_error 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:185: NOTICE:  PASS: fn_title_average_rating(FMA:B) = 5.00
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:187: NOTICE:  PASS: fn_title_average_rating returns NULL without reviews
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:189: NOTICE:  PASS: fn_character_appearance_count(Neo) = 3
+--------------
+ 
+(1 row)
+
+ set_config 
+------------
+ 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:191: NOTICE:  PASS: fn_character_event_count(Eddard Stark) = 3
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:194: NOTICE:  PASS: fn_user_has_permission: admin can manage content, alice cannot
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:210: NOTICE:  PASS: procedure: event + 2 participants inserted, appended at order 3
+ p_event_id 
+------------
+         17
+(1 row)
+
+ check 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:216: NOTICE:  PASS: procedure: invalid participant aborts the whole CALL (SQLSTATE 23514)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:218: NOTICE:  PASS: procedure: failed CALL left no event behind
+-------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ check 
+-------
+ 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:222: NOTICE:  PASS: procedure: admin assigns Admin to bob
+(1 row)
+
+ check 
+-------
+ 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:225: NOTICE:  PASS: procedure: viewer cannot assign roles (SQLSTATE 42501)
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:229: NOTICE:  PASS: v_title_catalogue has every title
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:230: NOTICE:  PASS: v_character_details returns rows
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:231: NOTICE:  PASS: v_event_details returns rows
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:232: NOTICE:  PASS: v_character_timeline returns rows
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:233: NOTICE:  PASS: v_character_arc_progress returns rows
+ check 
+-------
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:234: NOTICE:  PASS: v_title_ratings returns rows
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:239: NOTICE:  PASS: cinemind_app exists, can log in, is not superuser
+-------
+ 
+(1 row)
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:241: NOTICE:  PASS: cinemind_app can read/write reviews
+
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:244: NOTICE:  PASS: cinemind_app cannot UPDATE or DELETE audit_logs
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:246: NOTICE:  PASS: cinemind_app cannot change roles table
+ check 
+-------
+ 
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/10_validation.sql:248: NOTICE:  PASS: cinemind_readonly cannot read password_hash
+ check 
+-------
+ 
+(1 row)
+
+ check 
+-------
+ 
+(1 row)
+
+ALL VALIDATION CHECKS PASSED
+
+CineMind database is ready: cinemind_db on localhost:5433

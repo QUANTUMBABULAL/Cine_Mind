@@ -1,0 +1,47 @@
+# ---------------- Dependencies ----------------
+node_modules/
+
+# ---------------- Environment files and secrets (never commit) ----------------
+# Only *.example templates are committed.
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+pgpass.conf
+
+# ---------------- Build output ----------------
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+next-env.d.ts
+
+# ---------------- Test output / coverage ----------------
+coverage/
+
+# ---------------- Local logs ----------------
+logs/
+*.log
+npm-debug.log*
+# ...but keep the committed implementation evidence.
+!evidence/logs/
+!evidence/logs/*.log
+
+# ---------------- Caches ----------------
+.cache/
+.eslintcache
+
+# ---------------- Editors and operating systems ----------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------- Claude Code local settings ----------------
+.claude/settings.local.json

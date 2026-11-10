@@ -1,0 +1,433 @@
+﻿-- Generated 2026-11-03 09:36:00 by scripts/generate-evidence.ps1
+-- Command: psql -h localhost -p 5433 -U postgres -d cinemind_db -f database/09_demo_queries.sql
+=================== A. DDL ===================
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:18: NOTICE:  table "demo_watch_parties" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+                               Table "public.demo_watch_parties"
+    Column    |           Type           | Collation | Nullable |           Default            
+--------------+--------------------------+-----------+----------+------------------------------
+ party_id     | integer                  |           | not null | generated always as identity
+ host_id      | integer                  |           | not null | 
+ title_id     | integer                  |           | not null | 
+ party_name   | character varying(100)   |           | not null | 
+ max_guests   | integer                  |           | not null | 
+ scheduled_at | timestamp with time zone |           |          | 
+Indexes:
+    "demo_watch_parties_pkey" PRIMARY KEY, btree (party_id)
+    "demo_watch_parties_party_name_key" UNIQUE CONSTRAINT, btree (party_name)
+    "idx_demo_watch_parties_title" btree (title_id)
+Check constraints:
+    "chk_demo_future" CHECK (scheduled_at > '2000-01-01 00:00:00+05:30'::timestamp with time zone)
+    "demo_watch_parties_max_guests_check" CHECK (max_guests >= 2 AND max_guests <= 50)
+Foreign-key constraints:
+    "demo_watch_parties_host_id_fkey" FOREIGN KEY (host_id) REFERENCES users(user_id) ON DELETE CASCADE
+    "demo_watch_parties_title_id_fkey" FOREIGN KEY (title_id) REFERENCES titles(title_id)
+
+=================== B. DML ===================
+INSERT 0 1
+ party_id |   party_name    | max_guests 
+----------+-----------------+------------
+        1 | Matrix Marathon |          6
+(1 row)
+
+UPDATE 1
+   party_name    | max_guests 
+-----------------+------------
+ Matrix Marathon |         10
+(1 row)
+
+DELETE 1
+ remaining_parties 
+-------------------
+                 0
+(1 row)
+
+DROP TABLE
+=================== C. Constraint demonstrations ===================
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:67: NOTICE:  CHECK rejected rating 9: new row for relation "reviews" violates check constraint "chk_reviews_rating"
+DO
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:76: NOTICE:  UNIQUE rejected a second review by the same user: duplicate key value violates unique constraint "uq_reviews_user_title"
+DO
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:83: NOTICE:  FOREIGN KEY rejected unknown character: insert or update on table "character_appearances" violates foreign key constraint "character_appearances_character_id_fkey"
+DO
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:93: NOTICE:  CHECK rejected a self-relationship: new row for relation "character_relationships" violates check constraint "chk_relationships_not_self"
+DO
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:101: NOTICE:  CHECK rejected a bookmark with two targets: new row for relation "bookmarks" violates check constraint "chk_bookmarks_one_target"
+DO
+=================== D. Required queries ===================
+Q1. Simple SELECT: all universes
+ universe_id |        name         | origin_type 
+-------------+---------------------+-------------
+           1 | Game of Thrones     | novel
+           2 | Fullmetal Alchemist | manga
+           3 | Naruto              | manga
+           4 | The Matrix          | film
+(4 rows)
+
+Q2. WHERE + ORDER BY: titles released after 2005, newest first
+               name               |  media_type  | release_date 
+----------------------------------+--------------+--------------
+ House of the Dragon              | tv_series    | 2022-08-21
+ Game of Thrones                  | tv_series    | 2011-04-17
+ Inception                        | movie        | 2010-07-16
+ Fullmetal Alchemist: Brotherhood | anime_series | 2009-04-05
+ Naruto Shippuden                 | anime_series | 2007-02-15
+(5 rows)
+
+Q3. INNER JOIN (4 tables): which characters appear in which title of which universe
+    universe     |        title        |     character      | character_role 
+-----------------+---------------------+--------------------+----------------
+ Game of Thrones | Game of Thrones     | Arya Stark         | protagonist
+ Game of Thrones | Game of Thrones     | Catelyn Stark      | supporting
+ Game of Thrones | Game of Thrones     | Daenerys Targaryen | protagonist
+ Game of Thrones | Game of Thrones     | Eddard Stark       | protagonist
+ Game of Thrones | Game of Thrones     | Joffrey Baratheon  | antagonist
+ Game of Thrones | Game of Thrones     | Jon Snow           | protagonist
+ Game of Thrones | Game of Thrones     | Ramsay Bolton      | antagonist
+ Game of Thrones | Game of Thrones     | Robb Stark         | supporting
+ Game of Thrones | Game of Thrones     | Sansa Stark        | protagonist
+ Game of Thrones | Game of Thrones     | Tyrion Lannister   | protagonist
+ Game of Thrones | Game of Thrones     | Walder Frey        | antagonist
+ Game of Thrones | House of the Dragon | Daemon Targaryen   | protagonist
+ Game of Thrones | House of the Dragon | Rhaenyra Targaryen | protagonist
+(13 rows)
+
+Q4. LEFT JOIN: every title with its number of reviews (titles with no reviews included)
+               name               | reviews 
+----------------------------------+---------
+ Fullmetal Alchemist: Brotherhood |       2
+ Game of Thrones                  |       2
+ House of the Dragon              |       1
+ Inception                        |       1
+ Naruto                           |       1
+ The Matrix                       |       1
+ The Matrix Reloaded              |       1
+ Fullmetal Alchemist              |       0
+ Naruto Shippuden                 |       0
+ The Matrix Revolutions           |       0
+(10 rows)
+
+Q5. GROUP BY + aggregates: titles and characters per universe
+      universe       | titles | characters 
+---------------------+--------+------------
+ The Matrix          |      3 |          4
+ Fullmetal Alchemist |      2 |          3
+ Game of Thrones     |      2 |         13
+ Naruto              |      2 |          3
+ (standalone)        |      1 |          2
+(5 rows)
+
+Q6. HAVING: characters who took part in at least 3 story events
+      name      | events 
+----------------+--------
+ Edward Elric   |      4
+ Alphonse Elric |      3
+ Eddard Stark   |      3
+(3 rows)
+
+Q7. UPDATE (inside a transaction, rolled back): bob finishes The Matrix Reloaded
+BEGIN
+ progress_id | progress_status | progress_percentage |            updated_at            
+-------------+-----------------+---------------------+----------------------------------
+           5 | completed       |              100.00 | 2026-11-03 09:36:00.786469+05:30
+(1 row)
+
+UPDATE 1
+ROLLBACK
+Q8. DELETE (inside a transaction, rolled back): remove bob's Inception bookmark
+BEGIN
+ bookmark_id 
+-------------
+           4
+(1 row)
+
+DELETE 1
+ROLLBACK
+Q9. Nested query (IN): titles that contain at least one major-spoiler event
+               name               
+----------------------------------
+ Fullmetal Alchemist: Brotherhood
+ Game of Thrones
+ Naruto
+ The Matrix
+(4 rows)
+
+Q9b. Nested query (NOT EXISTS): characters who never took part in any event
+        name        
+--------------------
+ Daemon Targaryen
+ Rhaenyra Targaryen
+(2 rows)
+
+Q10. Correlated subquery: titles rated above the average of their own universe
+        name         | rating 
+---------------------+--------
+ The Matrix          |   5.00
+ House of the Dragon |   4.00
+(2 rows)
+
+Q11. COUNT / AVG / MAX / MIN: overall review statistics
+ total_reviews | average_rating | highest | lowest 
+---------------+----------------+---------+--------
+             9 |           4.22 |       5 |      3
+(1 row)
+
+Q12. Character participation in story events (The Red Wedding)
+   event_name    |   character   | participation_type |  outcome   
+-----------------+---------------+--------------------+------------
+ The Red Wedding | Walder Frey   | perpetrator        | victorious
+ The Red Wedding | Catelyn Stark | victim             | died
+ The Red Wedding | Robb Stark    | victim             | died
+ The Red Wedding | Arya Stark    | witness            | escaped
+(4 rows)
+
+Q13. Character arc progression: Jon Snow's arcs step by step
+              arc_name              | step |          event_name           |                  development_note                   
+------------------------------------+------+-------------------------------+-----------------------------------------------------
+ From the Wall to King in the North |    1 | King Robert visits Winterfell | Chooses the Night's Watch
+ From the Wall to King in the North |    2 | The Battle of the Bastards    | Wins back Winterfell and the loyalty of the North
+ The truth of his parentage         |    1 | The Tower of Joy              | The secret of his birth is revealed to the audience
+(3 rows)
+
+Q14. Popular / highly rated titles: at least 2 reviews, best average first
+               name               | reviews | average_rating 
+----------------------------------+---------+----------------
+ Fullmetal Alchemist: Brotherhood |       2 |           5.00
+ Game of Thrones                  |       2 |           3.50
+(2 rows)
+
+Extra: chronological vs release order of Game of Thrones events
+          event_name           | chronology_order | release_order 
+-------------------------------+------------------+---------------
+ The Tower of Joy              |                1 |             4
+ King Robert visits Winterfell |                2 |             1
+ Execution of Eddard Stark     |                3 |             2
+ The Red Wedding               |                4 |             3
+ The Battle of the Bastards    |                5 |             5
+ Daenerys arrives in Westeros  |                6 |             6
+(6 rows)
+
+Extra: directed relationships — both directions shown separately
+    source     | relationship |       target       
+---------------+--------------+--------------------
+ Eddard Stark  | Guardian Of  | Jon Snow
+ Jon Snow      | Ally Of      | Daenerys Targaryen
+ Jon Snow      | Enemy Of     | Ramsay Bolton
+ Ramsay Bolton | Enemy Of     | Jon Snow
+(4 rows)
+
+=================== E. Views ===================
+            title_name            |    universe_name    |               genres                | average_rating | review_count 
+----------------------------------+---------------------+-------------------------------------+----------------+--------------
+ Fullmetal Alchemist              | Fullmetal Alchemist | {Action,Adventure,Fantasy}          |                |            0
+ Fullmetal Alchemist: Brotherhood | Fullmetal Alchemist | {Action,Adventure,Drama,Fantasy}    |           5.00 |            2
+ Game of Thrones                  | Game of Thrones     | {Drama,Fantasy,Political}           |           3.50 |            2
+ House of the Dragon              | Game of Thrones     | {Drama,Fantasy,Political}           |           4.00 |            1
+ Inception                        |                     | {Action,"Science Fiction",Thriller} |           5.00 |            1
+ Naruto                           | Naruto              | {Action,Adventure,Coming-of-Age}    |           4.00 |            1
+ Naruto Shippuden                 | Naruto              | {Action,Adventure,Drama}            |                |            0
+ The Matrix                       | The Matrix          | {Action,"Science Fiction"}          |           5.00 |            1
+ The Matrix Reloaded              | The Matrix          | {Action,"Science Fiction"}          |           3.00 |            1
+ The Matrix Revolutions           | The Matrix          | {Action,"Science Fiction"}          |                |            0
+(10 rows)
+
+ character_name |    universe_name    | appearance_count | event_count 
+----------------+---------------------+------------------+-------------
+ Edward Elric   | Fullmetal Alchemist |                2 |           4
+ Alphonse Elric | Fullmetal Alchemist |                2 |           3
+ Eddard Stark   | Game of Thrones     |                1 |           3
+ Arya Stark     | Game of Thrones     |                1 |           2
+ Jon Snow       | Game of Thrones     |                1 |           2
+ Naruto Uzumaki | Naruto              |                2 |           2
+ Neo            | The Matrix          |                3 |           2
+ Roy Mustang    | Fullmetal Alchemist |                2 |           2
+(8 rows)
+
+          event_name           |   title_name    | participant_count |                        participant_names                        
+-------------------------------+-----------------+-------------------+-----------------------------------------------------------------
+ The Tower of Joy              | Game of Thrones |                 1 | {"Eddard Stark"}
+ King Robert visits Winterfell | Game of Thrones |                 3 | {"Eddard Stark","Jon Snow","Tyrion Lannister"}
+ Execution of Eddard Stark     | Game of Thrones |                 4 | {"Arya Stark","Eddard Stark","Joffrey Baratheon","Sansa Stark"}
+ The Red Wedding               | Game of Thrones |                 4 | {"Arya Stark","Catelyn Stark","Robb Stark","Walder Frey"}
+ The Battle of the Bastards    | Game of Thrones |                 3 | {"Jon Snow","Ramsay Bolton","Sansa Stark"}
+ Daenerys arrives in Westeros  | Game of Thrones |                 2 | {"Daenerys Targaryen","Tyrion Lannister"}
+(6 rows)
+
+ character_name |   title_name    |        event_name         | chronology_order | outcome 
+----------------+-----------------+---------------------------+------------------+---------
+ Arya Stark     | Game of Thrones | Execution of Eddard Stark |                3 | escaped
+ Arya Stark     | Game of Thrones | The Red Wedding           |                4 | escaped
+(2 rows)
+
+ character_name |            arc_name             | sequence_number | total_steps |            event_name             
+----------------+---------------------------------+-----------------+-------------+-----------------------------------
+ Edward Elric   | Atonement for the transmutation |               1 |           3 | The forbidden human transmutation
+ Edward Elric   | Atonement for the transmutation |               2 |           3 | Edward becomes a State Alchemist
+ Edward Elric   | Atonement for the transmutation |               3 |           3 | The Promised Day
+(3 rows)
+
+            title_name            | review_count | average_rating | highest_rating | lowest_rating 
+----------------------------------+--------------+----------------+----------------+---------------
+ The Matrix                       |            1 |           5.00 |              5 |             5
+ Fullmetal Alchemist: Brotherhood |            2 |           5.00 |              5 |             5
+ Inception                        |            1 |           5.00 |              5 |             5
+ Naruto                           |            1 |           4.00 |              4 |             4
+ House of the Dragon              |            1 |           4.00 |              4 |             4
+ Game of Thrones                  |            2 |           3.50 |              4 |             3
+ The Matrix Reloaded              |            1 |           3.00 |              3 |             3
+(7 rows)
+
+=================== F. Functions ===================
+               name               | average_rating 
+----------------------------------+----------------
+ Fullmetal Alchemist              |               
+ Fullmetal Alchemist: Brotherhood |           5.00
+ Game of Thrones                  |           3.50
+ House of the Dragon              |           4.00
+ Inception                        |           5.00
+ Naruto                           |           4.00
+ Naruto Shippuden                 |               
+ The Matrix                       |           5.00
+ The Matrix Reloaded              |           3.00
+ The Matrix Revolutions           |               
+(10 rows)
+
+     name     | appearances | events 
+--------------+-------------+--------
+ Eddard Stark |           1 |      3
+ Edward Elric |           2 |      4
+ Neo          |           3 |      2
+(3 rows)
+
+ username | can_manage_content 
+----------+--------------------
+ admin    | t
+ alice    | f
+ bob      | f
+(3 rows)
+
+   title_name    |        event_name         | chronology_order | release_order | participation_type | outcome 
+-----------------+---------------------------+------------------+---------------+--------------------+---------
+ Game of Thrones | Execution of Eddard Stark |                3 |             2 | witness            | escaped
+ Game of Thrones | The Red Wedding           |                4 |             3 | witness            | escaped
+(2 rows)
+
+=================== G. Stored procedure (CALL) ===================
+BEGIN
+ p_event_id 
+------------
+         19
+(1 row)
+
+      event_name      | chronology_order | release_order | participant_names 
+----------------------+------------------+---------------+-------------------
+ Demo: rooftop rescue |                3 |             3 | {Neo,Trinity}
+(1 row)
+
+ROLLBACK
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:290: ERROR:  Character 7 does not appear in title 9
+CONTEXT:  PL/pgSQL function trg_validate_story_links() line 44 at RAISE
+SQL statement "INSERT INTO event_participants (event_id, character_id, participation_type)
+        VALUES (p_event_id, p_character_ids[i], p_participation_types[i])"
+PL/pgSQL function add_story_event(integer,character varying,text,character varying,integer,integer,integer[],character varying[],integer) line 29 at SQL statement
+ invalid_events_saved 
+----------------------
+                    0
+(1 row)
+
+=================== H. Triggers ===================
+BEGIN
+ review_id | rating |          before_update           
+-----------+--------+----------------------------------
+         2 |      3 | 2026-11-03 09:35:57.680434+05:30
+(1 row)
+
+ acting_user_id 
+----------------
+ 3
+(1 row)
+
+ review_id | rating |           after_update           
+-----------+--------+----------------------------------
+         2 |      4 | 2026-11-03 09:36:00.882167+05:30
+(1 row)
+
+UPDATE 1
+ action | entity_type | entity_id | user_id | old_rating | new_rating 
+--------+-------------+-----------+---------+------------+------------
+ UPDATE | reviews     | 2         |       3 | 3          | 4
+(1 row)
+
+ROLLBACK
+=================== I. Transactions ===================
+BEGIN
+INSERT 0 1
+INSERT 0 3
+COMMIT
+   name    | linked_titles 
+-----------+---------------
+ Cyberpunk |             3
+(1 row)
+
+DELETE 1
+BEGIN
+INSERT 0 1
+ inside_transaction 
+--------------------
+                  1
+(1 row)
+
+ROLLBACK
+ after_rollback 
+----------------
+              0
+(1 row)
+
+BEGIN
+INSERT 0 1
+SAVEPOINT
+INSERT 0 1
+ROLLBACK
+   name    
+-----------
+ Demo Kept
+(1 row)
+
+ROLLBACK
+=================== J. Authorization ===================
+      rolname      | rolsuper | rolcanlogin 
+-------------------+----------+-------------
+ cinemind_admin    | f        | f
+ cinemind_app      | f        | t
+ cinemind_readonly | f        | f
+(3 rows)
+
+     role     | can_insert_reviews | can_insert_audit | can_delete_audit | can_update_roles 
+--------------+--------------------+------------------+------------------+------------------
+ cinemind_app | t                  | t                | f                | f
+(1 row)
+
+       role        | can_read_titles | can_insert_titles | can_read_password_hash 
+-------------------+-----------------+-------------------+------------------------
+ cinemind_readonly | t               | f                 | f
+(1 row)
+
+BEGIN
+SET
+   current_user    | readable_titles 
+-------------------+-----------------
+ cinemind_readonly |              10
+(1 row)
+
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:373: NOTICE:  cinemind_readonly cannot INSERT: permission denied for table genres
+DO
+ROLLBACK
+BEGIN
+SET
+psql:C:/Users/CHINMAI/Desktop/DBMS_2.0/database/09_demo_queries.sql:383: NOTICE:  cinemind_app cannot DELETE audit history: permission denied for table audit_logs
+DO
+ROLLBACK

@@ -1,0 +1,471 @@
+﻿-- Generated 2026-11-03 09:36:00 by scripts/generate-evidence.ps1
+-- Command: psql -h localhost -p 5433 -U postgres -d cinemind_db -f database/11_inspect_schema.sql
+Pager usage is off.
+==================== Tables (dt) ====================
+                   List of tables
+ Schema |          Name           | Type  |  Owner   
+--------+-------------------------+-------+----------
+ public | arc_events              | table | postgres
+ public | audit_logs              | table | postgres
+ public | bookmarks               | table | postgres
+ public | character_appearances   | table | postgres
+ public | character_arcs          | table | postgres
+ public | character_relationships | table | postgres
+ public | characters              | table | postgres
+ public | event_participants      | table | postgres
+ public | genres                  | table | postgres
+ public | permissions             | table | postgres
+ public | relationship_types      | table | postgres
+ public | reviews                 | table | postgres
+ public | role_permissions        | table | postgres
+ public | roles                   | table | postgres
+ public | story_events            | table | postgres
+ public | title_genres            | table | postgres
+ public | titles                  | table | postgres
+ public | universes               | table | postgres
+ public | user_roles              | table | postgres
+ public | users                   | table | postgres
+ public | watch_progress          | table | postgres
+(21 rows)
+
+==================== Views (dv) ====================
+                    List of views
+ Schema |           Name           | Type |  Owner   
+--------+--------------------------+------+----------
+ public | v_character_arc_progress | view | postgres
+ public | v_character_details      | view | postgres
+ public | v_character_timeline     | view | postgres
+ public | v_event_details          | view | postgres
+ public | v_title_catalogue        | view | postgres
+ public | v_title_ratings          | view | postgres
+(6 rows)
+
+==================== Functions and procedures (df) ====================
+                                                                                                                                                                                                                                                                   List of functions
+ Schema |               Name                |                                                                                  Result data type                                                                                   |                                                                                                                                             Argument data types                                                                                                                                              | Type 
+--------+-----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------
+ public | add_story_event                   |                                                                                                                                                                                     | IN p_title_id integer, IN p_event_name character varying, IN p_description text, IN p_spoiler_level character varying, IN p_chronology_order integer, IN p_release_order integer, IN p_character_ids integer[], IN p_participation_types character varying[], INOUT p_event_id integer DEFAULT NULL::integer | proc
+ public | armor                             | text                                                                                                                                                                                | bytea                                                                                                                                                                                                                                                                                                        | func
+ public | armor                             | text                                                                                                                                                                                | bytea, text[], text[]                                                                                                                                                                                                                                                                                        | func
+ public | assign_user_role                  |                                                                                                                                                                                     | IN p_actor_user_id integer, IN p_target_user_id integer, IN p_role_name character varying                                                                                                                                                                                                                    | proc
+ public | crypt                             | text                                                                                                                                                                                | text, text                                                                                                                                                                                                                                                                                                   | func
+ public | dearmor                           | bytea                                                                                                                                                                               | text                                                                                                                                                                                                                                                                                                         | func
+ public | decrypt                           | bytea                                                                                                                                                                               | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | decrypt_iv                        | bytea                                                                                                                                                                               | bytea, bytea, bytea, text                                                                                                                                                                                                                                                                                    | func
+ public | digest                            | bytea                                                                                                                                                                               | bytea, text                                                                                                                                                                                                                                                                                                  | func
+ public | digest                            | bytea                                                                                                                                                                               | text, text                                                                                                                                                                                                                                                                                                   | func
+ public | encrypt                           | bytea                                                                                                                                                                               | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | encrypt_iv                        | bytea                                                                                                                                                                               | bytea, bytea, bytea, text                                                                                                                                                                                                                                                                                    | func
+ public | fips_mode                         | boolean                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+ public | fn_character_appearance_count     | integer                                                                                                                                                                             | p_character_id integer                                                                                                                                                                                                                                                                                       | func
+ public | fn_character_event_count          | integer                                                                                                                                                                             | p_character_id integer                                                                                                                                                                                                                                                                                       | func
+ public | fn_character_timeline             | TABLE(title_name character varying, event_name character varying, chronology_order integer, release_order integer, participation_type character varying, outcome character varying) | p_character_id integer, p_order text DEFAULT 'chronology'::text                                                                                                                                                                                                                                              | func
+ public | fn_current_app_user               | integer                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+ public | fn_title_average_rating           | numeric                                                                                                                                                                             | p_title_id integer                                                                                                                                                                                                                                                                                           | func
+ public | fn_user_has_permission            | boolean                                                                                                                                                                             | p_user_id integer, p_permission_code text                                                                                                                                                                                                                                                                    | func
+ public | gen_random_bytes                  | bytea                                                                                                                                                                               | integer                                                                                                                                                                                                                                                                                                      | func
+ public | gen_random_uuid                   | uuid                                                                                                                                                                                |                                                                                                                                                                                                                                                                                                              | func
+ public | gen_salt                          | text                                                                                                                                                                                | text                                                                                                                                                                                                                                                                                                         | func
+ public | gen_salt                          | text                                                                                                                                                                                | text, integer                                                                                                                                                                                                                                                                                                | func
+ public | hmac                              | bytea                                                                                                                                                                               | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | hmac                              | bytea                                                                                                                                                                               | text, text, text                                                                                                                                                                                                                                                                                             | func
+ public | pgp_armor_headers                 | SETOF record                                                                                                                                                                        | text, OUT key text, OUT value text                                                                                                                                                                                                                                                                           | func
+ public | pgp_key_id                        | text                                                                                                                                                                                | bytea                                                                                                                                                                                                                                                                                                        | func
+ public | pgp_pub_decrypt                   | text                                                                                                                                                                                | bytea, bytea                                                                                                                                                                                                                                                                                                 | func
+ public | pgp_pub_decrypt                   | text                                                                                                                                                                                | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | pgp_pub_decrypt                   | text                                                                                                                                                                                | bytea, bytea, text, text                                                                                                                                                                                                                                                                                     | func
+ public | pgp_pub_decrypt_bytea             | bytea                                                                                                                                                                               | bytea, bytea                                                                                                                                                                                                                                                                                                 | func
+ public | pgp_pub_decrypt_bytea             | bytea                                                                                                                                                                               | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | pgp_pub_decrypt_bytea             | bytea                                                                                                                                                                               | bytea, bytea, text, text                                                                                                                                                                                                                                                                                     | func
+ public | pgp_pub_encrypt                   | bytea                                                                                                                                                                               | text, bytea                                                                                                                                                                                                                                                                                                  | func
+ public | pgp_pub_encrypt                   | bytea                                                                                                                                                                               | text, bytea, text                                                                                                                                                                                                                                                                                            | func
+ public | pgp_pub_encrypt_bytea             | bytea                                                                                                                                                                               | bytea, bytea                                                                                                                                                                                                                                                                                                 | func
+ public | pgp_pub_encrypt_bytea             | bytea                                                                                                                                                                               | bytea, bytea, text                                                                                                                                                                                                                                                                                           | func
+ public | pgp_sym_decrypt                   | text                                                                                                                                                                                | bytea, text                                                                                                                                                                                                                                                                                                  | func
+ public | pgp_sym_decrypt                   | text                                                                                                                                                                                | bytea, text, text                                                                                                                                                                                                                                                                                            | func
+ public | pgp_sym_decrypt_bytea             | bytea                                                                                                                                                                               | bytea, text                                                                                                                                                                                                                                                                                                  | func
+ public | pgp_sym_decrypt_bytea             | bytea                                                                                                                                                                               | bytea, text, text                                                                                                                                                                                                                                                                                            | func
+ public | pgp_sym_encrypt                   | bytea                                                                                                                                                                               | text, text                                                                                                                                                                                                                                                                                                   | func
+ public | pgp_sym_encrypt                   | bytea                                                                                                                                                                               | text, text, text                                                                                                                                                                                                                                                                                             | func
+ public | pgp_sym_encrypt_bytea             | bytea                                                                                                                                                                               | bytea, text                                                                                                                                                                                                                                                                                                  | func
+ public | pgp_sym_encrypt_bytea             | bytea                                                                                                                                                                               | bytea, text, text                                                                                                                                                                                                                                                                                            | func
+ public | trg_audit_row_change              | trigger                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+ public | trg_prevent_admin_self_assignment | trigger                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+ public | trg_set_updated_at                | trigger                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+ public | trg_validate_story_links          | trigger                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                              | func
+(49 rows)
+
+==================== Row counts ====================
+       table_name        | approx_rows 
+-------------------------+-------------
+ arc_events              |          14
+ audit_logs              |         103
+ bookmarks               |           7
+ character_appearances   |          39
+ character_arcs          |           7
+ character_relationships |          25
+ characters              |          25
+ event_participants      |          39
+ genres                  |           8
+ permissions             |           6
+ relationship_types      |          10
+ reviews                 |           9
+ role_permissions        |           9
+ roles                   |           2
+ story_events            |          15
+ title_genres            |          28
+ titles                  |          10
+ universes               |           4
+ user_roles              |           4
+ users                   |           3
+ watch_progress          |           6
+(21 rows)
+
+==================== Primary keys ====================
+       table_name        |      primary_key       
+-------------------------+------------------------
+ arc_events              | arc_id, event_id
+ audit_logs              | audit_id
+ bookmarks               | bookmark_id
+ character_appearances   | character_id, title_id
+ character_arcs          | arc_id
+ character_relationships | relationship_id
+ characters              | character_id
+ event_participants      | event_id, character_id
+ genres                  | genre_id
+ permissions             | permission_id
+ relationship_types      | relationship_type_id
+ reviews                 | review_id
+ role_permissions        | role_id, permission_id
+ roles                   | role_id
+ story_events            | event_id
+ title_genres            | title_id, genre_id
+ titles                  | title_id
+ universes               | universe_id
+ user_roles              | user_id, role_id
+ users                   | user_id
+ watch_progress          | progress_id
+(21 rows)
+
+==================== Foreign keys (with ON DELETE rule) ====================
+       child_table       |                                                definition                                                 
+-------------------------+-----------------------------------------------------------------------------------------------------------
+ user_roles              | FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE RESTRICT
+ user_roles              | FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+ role_permissions        | FOREIGN KEY (permission_id) REFERENCES permissions(permission_id) ON DELETE CASCADE
+ role_permissions        | FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE
+ audit_logs              | FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
+ titles                  | FOREIGN KEY (universe_id) REFERENCES universes(universe_id) ON DELETE RESTRICT
+ title_genres            | FOREIGN KEY (genre_id) REFERENCES genres(genre_id) ON DELETE CASCADE
+ title_genres            | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ characters              | FOREIGN KEY (universe_id) REFERENCES universes(universe_id) ON DELETE RESTRICT
+ character_appearances   | FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ character_appearances   | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ character_relationships | FOREIGN KEY (relationship_type_id) REFERENCES relationship_types(relationship_type_id) ON DELETE RESTRICT
+ character_relationships | FOREIGN KEY (source_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ character_relationships | FOREIGN KEY (target_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ story_events            | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ event_participants      | FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ event_participants      | FOREIGN KEY (event_id) REFERENCES story_events(event_id) ON DELETE CASCADE
+ character_arcs          | FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ character_arcs          | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ arc_events              | FOREIGN KEY (arc_id) REFERENCES character_arcs(arc_id) ON DELETE CASCADE
+ arc_events              | FOREIGN KEY (event_id) REFERENCES story_events(event_id) ON DELETE CASCADE
+ bookmarks               | FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+ bookmarks               | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ bookmarks               | FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+ reviews                 | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ reviews                 | FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+ watch_progress          | FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+ watch_progress          | FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+(28 rows)
+
+==================== UNIQUE constraints ====================
+       table_name        |             conname             |                               definition                                
+-------------------------+---------------------------------+-------------------------------------------------------------------------
+ users                   | users_email_key                 | UNIQUE (email)
+ users                   | users_username_key              | UNIQUE (username)
+ roles                   | roles_role_name_key             | UNIQUE (role_name)
+ permissions             | permissions_permission_code_key | UNIQUE (permission_code)
+ universes               | universes_name_key              | UNIQUE (name)
+ titles                  | uq_titles_name_release          | UNIQUE NULLS NOT DISTINCT (name, release_date)
+ genres                  | genres_name_key                 | UNIQUE (name)
+ characters              | uq_characters_universe_name     | UNIQUE NULLS NOT DISTINCT (universe_id, name)
+ relationship_types      | relationship_types_name_key     | UNIQUE (name)
+ character_relationships | uq_relationships_directed       | UNIQUE (source_character_id, target_character_id, relationship_type_id)
+ story_events            | uq_events_title_chronology      | UNIQUE (title_id, chronology_order)
+ story_events            | uq_events_title_name            | UNIQUE (title_id, event_name)
+ story_events            | uq_events_title_release         | UNIQUE (title_id, release_order)
+ character_arcs          | uq_arcs_character_title_name    | UNIQUE (character_id, title_id, arc_name)
+ arc_events              | uq_arc_events_sequence          | UNIQUE (arc_id, sequence_number)
+ bookmarks               | uq_bookmarks_user_character     | UNIQUE (user_id, character_id)
+ bookmarks               | uq_bookmarks_user_title         | UNIQUE (user_id, title_id)
+ reviews                 | uq_reviews_user_title           | UNIQUE (user_id, title_id)
+ watch_progress          | uq_progress_user_title          | UNIQUE (user_id, title_id)
+(19 rows)
+
+==================== CHECK constraints ====================
+       table_name        |           conname           |                                                                                                                                            definition                                                                                                                                            
+-------------------------+-----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ users                   | chk_users_email             | CHECK ((((email)::text = lower((email)::text)) AND ((email)::text ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$'::text)))
+ users                   | chk_users_status            | CHECK (((account_status)::text = ANY ((ARRAY['active'::character varying, 'suspended'::character varying])::text[])))
+ users                   | chk_users_username          | CHECK (((username)::text ~ '^[A-Za-z0-9_]{3,50}$'::text))
+ audit_logs              | chk_audit_action            | CHECK (((action)::text = ANY ((ARRAY['INSERT'::character varying, 'UPDATE'::character varying, 'DELETE'::character varying])::text[])))
+ universes               | chk_universes_origin        | CHECK (((origin_type)::text = ANY ((ARRAY['manga'::character varying, 'novel'::character varying, 'film'::character varying, 'tv'::character varying, 'comic'::character varying, 'game'::character varying, 'original'::character varying])::text[])))
+ titles                  | chk_titles_media_type       | CHECK (((media_type)::text = ANY ((ARRAY['movie'::character varying, 'anime_series'::character varying, 'anime_movie'::character varying, 'tv_series'::character varying, 'web_series'::character varying])::text[])))
+ titles                  | chk_titles_status           | CHECK (((status)::text = ANY ((ARRAY['upcoming'::character varying, 'released'::character varying, 'ongoing'::character varying, 'completed'::character varying])::text[])))
+ character_appearances   | chk_appearances_role        | CHECK (((character_role)::text = ANY ((ARRAY['protagonist'::character varying, 'antagonist'::character varying, 'supporting'::character varying, 'minor'::character varying, 'cameo'::character varying])::text[])))
+ character_relationships | chk_relationships_not_self  | CHECK ((source_character_id <> target_character_id))
+ story_events            | chk_events_orders_positive  | CHECK (((chronology_order > 0) AND (release_order > 0)))
+ story_events            | chk_events_spoiler          | CHECK (((spoiler_level)::text = ANY ((ARRAY['none'::character varying, 'minor'::character varying, 'major'::character varying])::text[])))
+ event_participants      | chk_participants_outcome    | CHECK (((outcome IS NULL) OR ((outcome)::text = ANY ((ARRAY['survived'::character varying, 'died'::character varying, 'injured'::character varying, 'victorious'::character varying, 'defeated'::character varying, 'escaped'::character varying, 'transformed'::character varying])::text[]))))
+ event_participants      | chk_participants_type       | CHECK (((participation_type)::text = ANY ((ARRAY['central'::character varying, 'supporting'::character varying, 'victim'::character varying, 'perpetrator'::character varying, 'witness'::character varying])::text[])))
+ character_arcs          | chk_arcs_status             | CHECK (((arc_status)::text = ANY ((ARRAY['ongoing'::character varying, 'completed'::character varying, 'abandoned'::character varying])::text[])))
+ arc_events              | chk_arc_events_sequence     | CHECK ((sequence_number > 0))
+ bookmarks               | chk_bookmarks_one_target    | CHECK ((num_nonnulls(title_id, character_id) = 1))
+ reviews                 | chk_reviews_rating          | CHECK (((rating >= 1) AND (rating <= 5)))
+ reviews                 | chk_reviews_text_length     | CHECK (((review_text IS NULL) OR (char_length(review_text) <= 5000)))
+ watch_progress          | chk_progress_completed_full | CHECK ((((progress_status)::text <> 'completed'::text) OR (progress_percentage = (100)::numeric)))
+ watch_progress          | chk_progress_percentage     | CHECK (((progress_percentage >= (0)::numeric) AND (progress_percentage <= (100)::numeric)))
+ watch_progress          | chk_progress_status         | CHECK (((progress_status)::text = ANY ((ARRAY['planned'::character varying, 'watching'::character varying, 'completed'::character varying, 'dropped'::character varying])::text[])))
+(21 rows)
+
+==================== Indexes ====================
+        tablename        |            indexname            |                                                                           indexdef                                                                           
+-------------------------+---------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+ arc_events              | arc_events_pkey                 | CREATE UNIQUE INDEX arc_events_pkey ON public.arc_events USING btree (arc_id, event_id)
+ arc_events              | idx_arc_events_event            | CREATE INDEX idx_arc_events_event ON public.arc_events USING btree (event_id)
+ arc_events              | uq_arc_events_sequence          | CREATE UNIQUE INDEX uq_arc_events_sequence ON public.arc_events USING btree (arc_id, sequence_number)
+ audit_logs              | audit_logs_pkey                 | CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (audit_id)
+ audit_logs              | idx_audit_entity                | CREATE INDEX idx_audit_entity ON public.audit_logs USING btree (entity_type, entity_id)
+ audit_logs              | idx_audit_time                  | CREATE INDEX idx_audit_time ON public.audit_logs USING btree (created_at DESC)
+ audit_logs              | idx_audit_user                  | CREATE INDEX idx_audit_user ON public.audit_logs USING btree (user_id)
+ bookmarks               | bookmarks_pkey                  | CREATE UNIQUE INDEX bookmarks_pkey ON public.bookmarks USING btree (bookmark_id)
+ bookmarks               | uq_bookmarks_user_character     | CREATE UNIQUE INDEX uq_bookmarks_user_character ON public.bookmarks USING btree (user_id, character_id)
+ bookmarks               | uq_bookmarks_user_title         | CREATE UNIQUE INDEX uq_bookmarks_user_title ON public.bookmarks USING btree (user_id, title_id)
+ character_appearances   | character_appearances_pkey      | CREATE UNIQUE INDEX character_appearances_pkey ON public.character_appearances USING btree (character_id, title_id)
+ character_appearances   | idx_appearances_title           | CREATE INDEX idx_appearances_title ON public.character_appearances USING btree (title_id)
+ character_arcs          | character_arcs_pkey             | CREATE UNIQUE INDEX character_arcs_pkey ON public.character_arcs USING btree (arc_id)
+ character_arcs          | idx_arcs_title                  | CREATE INDEX idx_arcs_title ON public.character_arcs USING btree (title_id)
+ character_arcs          | uq_arcs_character_title_name    | CREATE UNIQUE INDEX uq_arcs_character_title_name ON public.character_arcs USING btree (character_id, title_id, arc_name)
+ character_relationships | character_relationships_pkey    | CREATE UNIQUE INDEX character_relationships_pkey ON public.character_relationships USING btree (relationship_id)
+ character_relationships | idx_relationships_target        | CREATE INDEX idx_relationships_target ON public.character_relationships USING btree (target_character_id)
+ character_relationships | uq_relationships_directed       | CREATE UNIQUE INDEX uq_relationships_directed ON public.character_relationships USING btree (source_character_id, target_character_id, relationship_type_id)
+ characters              | characters_pkey                 | CREATE UNIQUE INDEX characters_pkey ON public.characters USING btree (character_id)
+ characters              | idx_characters_name_lower       | CREATE INDEX idx_characters_name_lower ON public.characters USING btree (lower((name)::text))
+ characters              | uq_characters_universe_name     | CREATE UNIQUE INDEX uq_characters_universe_name ON public.characters USING btree (universe_id, name) NULLS NOT DISTINCT
+ event_participants      | event_participants_pkey         | CREATE UNIQUE INDEX event_participants_pkey ON public.event_participants USING btree (event_id, character_id)
+ event_participants      | idx_participants_character      | CREATE INDEX idx_participants_character ON public.event_participants USING btree (character_id)
+ genres                  | genres_name_key                 | CREATE UNIQUE INDEX genres_name_key ON public.genres USING btree (name)
+ genres                  | genres_pkey                     | CREATE UNIQUE INDEX genres_pkey ON public.genres USING btree (genre_id)
+ permissions             | permissions_permission_code_key | CREATE UNIQUE INDEX permissions_permission_code_key ON public.permissions USING btree (permission_code)
+ permissions             | permissions_pkey                | CREATE UNIQUE INDEX permissions_pkey ON public.permissions USING btree (permission_id)
+ relationship_types      | relationship_types_name_key     | CREATE UNIQUE INDEX relationship_types_name_key ON public.relationship_types USING btree (name)
+ relationship_types      | relationship_types_pkey         | CREATE UNIQUE INDEX relationship_types_pkey ON public.relationship_types USING btree (relationship_type_id)
+ reviews                 | idx_reviews_title               | CREATE INDEX idx_reviews_title ON public.reviews USING btree (title_id)
+ reviews                 | reviews_pkey                    | CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (review_id)
+ reviews                 | uq_reviews_user_title           | CREATE UNIQUE INDEX uq_reviews_user_title ON public.reviews USING btree (user_id, title_id)
+ role_permissions        | role_permissions_pkey           | CREATE UNIQUE INDEX role_permissions_pkey ON public.role_permissions USING btree (role_id, permission_id)
+ roles                   | roles_pkey                      | CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (role_id)
+ roles                   | roles_role_name_key             | CREATE UNIQUE INDEX roles_role_name_key ON public.roles USING btree (role_name)
+ story_events            | story_events_pkey               | CREATE UNIQUE INDEX story_events_pkey ON public.story_events USING btree (event_id)
+ story_events            | uq_events_title_chronology      | CREATE UNIQUE INDEX uq_events_title_chronology ON public.story_events USING btree (title_id, chronology_order)
+ story_events            | uq_events_title_name            | CREATE UNIQUE INDEX uq_events_title_name ON public.story_events USING btree (title_id, event_name)
+ story_events            | uq_events_title_release         | CREATE UNIQUE INDEX uq_events_title_release ON public.story_events USING btree (title_id, release_order)
+ title_genres            | idx_title_genres_genre          | CREATE INDEX idx_title_genres_genre ON public.title_genres USING btree (genre_id)
+ title_genres            | title_genres_pkey               | CREATE UNIQUE INDEX title_genres_pkey ON public.title_genres USING btree (title_id, genre_id)
+ titles                  | idx_titles_media_type           | CREATE INDEX idx_titles_media_type ON public.titles USING btree (media_type)
+ titles                  | idx_titles_name_lower           | CREATE INDEX idx_titles_name_lower ON public.titles USING btree (lower((name)::text))
+ titles                  | idx_titles_universe             | CREATE INDEX idx_titles_universe ON public.titles USING btree (universe_id)
+ titles                  | titles_pkey                     | CREATE UNIQUE INDEX titles_pkey ON public.titles USING btree (title_id)
+ titles                  | uq_titles_name_release          | CREATE UNIQUE INDEX uq_titles_name_release ON public.titles USING btree (name, release_date) NULLS NOT DISTINCT
+ universes               | universes_name_key              | CREATE UNIQUE INDEX universes_name_key ON public.universes USING btree (name)
+ universes               | universes_pkey                  | CREATE UNIQUE INDEX universes_pkey ON public.universes USING btree (universe_id)
+ user_roles              | user_roles_pkey                 | CREATE UNIQUE INDEX user_roles_pkey ON public.user_roles USING btree (user_id, role_id)
+ users                   | uq_users_username_lower         | CREATE UNIQUE INDEX uq_users_username_lower ON public.users USING btree (lower((username)::text))
+ users                   | users_email_key                 | CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)
+ users                   | users_pkey                      | CREATE UNIQUE INDEX users_pkey ON public.users USING btree (user_id)
+ users                   | users_username_key              | CREATE UNIQUE INDEX users_username_key ON public.users USING btree (username)
+ watch_progress          | uq_progress_user_title          | CREATE UNIQUE INDEX uq_progress_user_title ON public.watch_progress USING btree (user_id, title_id)
+ watch_progress          | watch_progress_pkey             | CREATE UNIQUE INDEX watch_progress_pkey ON public.watch_progress USING btree (progress_id)
+(55 rows)
+
+==================== Triggers ====================
+       table_name        |            trigger_name             |        events        | timing 
+-------------------------+-------------------------------------+----------------------+--------
+ arc_events              | validate_arc_events                 | INSERT/UPDATE        | BEFORE
+ character_appearances   | validate_character_appearances      | INSERT/UPDATE        | BEFORE
+ character_arcs          | validate_character_arcs             | INSERT/UPDATE        | BEFORE
+ character_relationships | audit_character_relationships       | DELETE/INSERT/UPDATE | AFTER
+ character_relationships | validate_character_relationships    | INSERT/UPDATE        | BEFORE
+ characters              | audit_characters                    | DELETE/INSERT/UPDATE | AFTER
+ event_participants      | validate_event_participants         | INSERT/UPDATE        | BEFORE
+ genres                  | audit_genres                        | DELETE/INSERT/UPDATE | AFTER
+ reviews                 | audit_reviews                       | DELETE/INSERT/UPDATE | AFTER
+ reviews                 | reviews_set_updated_at              | UPDATE               | BEFORE
+ story_events            | audit_story_events                  | DELETE/INSERT/UPDATE | AFTER
+ titles                  | audit_titles                        | DELETE/INSERT/UPDATE | AFTER
+ universes               | audit_universes                     | DELETE/INSERT/UPDATE | AFTER
+ user_roles              | audit_user_roles                    | DELETE/INSERT/UPDATE | AFTER
+ user_roles              | user_roles_no_admin_self_assignment | INSERT/UPDATE        | BEFORE
+ users                   | audit_users                         | DELETE/INSERT/UPDATE | AFTER
+ watch_progress          | watch_progress_set_updated_at       | UPDATE               | BEFORE
+(17 rows)
+
+==================== Database roles ====================
+      rolname      | rolsuper | rolcanlogin | rolcreatedb | rolcreaterole | rolconnlimit 
+-------------------+----------+-------------+-------------+---------------+--------------
+ cinemind_admin    | f        | f           | f           | f             |           -1
+ cinemind_app      | f        | t           | f           | f             |           20
+ cinemind_readonly | f        | f           | f           | f             |           -1
+(3 rows)
+
+==================== Table privileges of cinemind_app ====================
+        table_name        |           privileges           
+--------------------------+--------------------------------
+ arc_events               | DELETE, INSERT, SELECT, UPDATE
+ audit_logs               | INSERT, SELECT
+ bookmarks                | DELETE, INSERT, SELECT, UPDATE
+ character_appearances    | DELETE, INSERT, SELECT, UPDATE
+ character_arcs           | DELETE, INSERT, SELECT, UPDATE
+ character_relationships  | DELETE, INSERT, SELECT, UPDATE
+ characters               | DELETE, INSERT, SELECT, UPDATE
+ event_participants       | DELETE, INSERT, SELECT, UPDATE
+ genres                   | DELETE, INSERT, SELECT, UPDATE
+ permissions              | SELECT
+ relationship_types       | DELETE, INSERT, SELECT, UPDATE
+ reviews                  | DELETE, INSERT, SELECT, UPDATE
+ role_permissions         | SELECT
+ roles                    | SELECT
+ story_events             | DELETE, INSERT, SELECT, UPDATE
+ title_genres             | DELETE, INSERT, SELECT, UPDATE
+ titles                   | DELETE, INSERT, SELECT, UPDATE
+ universes                | DELETE, INSERT, SELECT, UPDATE
+ user_roles               | DELETE, INSERT, SELECT, UPDATE
+ users                    | DELETE, INSERT, SELECT, UPDATE
+ v_character_arc_progress | DELETE, INSERT, SELECT, UPDATE
+ v_character_details      | DELETE, INSERT, SELECT, UPDATE
+ v_character_timeline     | DELETE, INSERT, SELECT, UPDATE
+ v_event_details          | DELETE, INSERT, SELECT, UPDATE
+ v_title_catalogue        | DELETE, INSERT, SELECT, UPDATE
+ v_title_ratings          | DELETE, INSERT, SELECT, UPDATE
+ watch_progress           | DELETE, INSERT, SELECT, UPDATE
+(27 rows)
+
+==================== Structure of key tables (d) ====================
+                                       Table "public.characters"
+        Column         |           Type           | Collation | Nullable |           Default            
+-----------------------+--------------------------+-----------+----------+------------------------------
+ character_id          | integer                  |           | not null | generated always as identity
+ universe_id           | integer                  |           |          | 
+ name                  | character varying(150)   |           | not null | 
+ biography             | text                     |           |          | 
+ gender                | character varying(30)    |           |          | 
+ species               | character varying(60)    |           |          | 
+ image_url             | text                     |           |          | 
+ first_appearance_date | date                     |           |          | 
+ created_at            | timestamp with time zone |           | not null | now()
+Indexes:
+    "characters_pkey" PRIMARY KEY, btree (character_id)
+    "idx_characters_name_lower" btree (lower(name::text))
+    "uq_characters_universe_name" UNIQUE CONSTRAINT, btree (universe_id, name) NULLS NOT DISTINCT
+Foreign-key constraints:
+    "characters_universe_id_fkey" FOREIGN KEY (universe_id) REFERENCES universes(universe_id) ON DELETE RESTRICT
+Referenced by:
+    TABLE "bookmarks" CONSTRAINT "bookmarks_character_id_fkey" FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    TABLE "character_appearances" CONSTRAINT "character_appearances_character_id_fkey" FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    TABLE "character_arcs" CONSTRAINT "character_arcs_character_id_fkey" FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    TABLE "character_relationships" CONSTRAINT "character_relationships_source_character_id_fkey" FOREIGN KEY (source_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    TABLE "character_relationships" CONSTRAINT "character_relationships_target_character_id_fkey" FOREIGN KEY (target_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    TABLE "event_participants" CONSTRAINT "event_participants_character_id_fkey" FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+Triggers:
+    audit_characters AFTER INSERT OR DELETE OR UPDATE ON characters FOR EACH ROW EXECUTE FUNCTION trg_audit_row_change('character_id')
+
+                                Table "public.character_relationships"
+        Column        |           Type           | Collation | Nullable |           Default            
+----------------------+--------------------------+-----------+----------+------------------------------
+ relationship_id      | integer                  |           | not null | generated always as identity
+ source_character_id  | integer                  |           | not null | 
+ target_character_id  | integer                  |           | not null | 
+ relationship_type_id | integer                  |           | not null | 
+ description          | text                     |           |          | 
+ created_at           | timestamp with time zone |           | not null | now()
+Indexes:
+    "character_relationships_pkey" PRIMARY KEY, btree (relationship_id)
+    "idx_relationships_target" btree (target_character_id)
+    "uq_relationships_directed" UNIQUE CONSTRAINT, btree (source_character_id, target_character_id, relationship_type_id)
+Check constraints:
+    "chk_relationships_not_self" CHECK (source_character_id <> target_character_id)
+Foreign-key constraints:
+    "character_relationships_relationship_type_id_fkey" FOREIGN KEY (relationship_type_id) REFERENCES relationship_types(relationship_type_id) ON DELETE RESTRICT
+    "character_relationships_source_character_id_fkey" FOREIGN KEY (source_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    "character_relationships_target_character_id_fkey" FOREIGN KEY (target_character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+Triggers:
+    audit_character_relationships AFTER INSERT OR DELETE OR UPDATE ON character_relationships FOR EACH ROW EXECUTE FUNCTION trg_audit_row_change('relationship_id')
+    validate_character_relationships BEFORE INSERT OR UPDATE ON character_relationships FOR EACH ROW EXECUTE FUNCTION trg_validate_story_links()
+
+                                    Table "public.story_events"
+      Column      |           Type           | Collation | Nullable |           Default            
+------------------+--------------------------+-----------+----------+------------------------------
+ event_id         | integer                  |           | not null | generated always as identity
+ title_id         | integer                  |           | not null | 
+ event_name       | character varying(200)   |           | not null | 
+ description      | text                     |           |          | 
+ chronology_order | integer                  |           | not null | 
+ release_order    | integer                  |           | not null | 
+ spoiler_level    | character varying(10)    |           | not null | 'none'::character varying
+ created_at       | timestamp with time zone |           | not null | now()
+Indexes:
+    "story_events_pkey" PRIMARY KEY, btree (event_id)
+    "uq_events_title_chronology" UNIQUE CONSTRAINT, btree (title_id, chronology_order)
+    "uq_events_title_name" UNIQUE CONSTRAINT, btree (title_id, event_name)
+    "uq_events_title_release" UNIQUE CONSTRAINT, btree (title_id, release_order)
+Check constraints:
+    "chk_events_orders_positive" CHECK (chronology_order > 0 AND release_order > 0)
+    "chk_events_spoiler" CHECK (spoiler_level::text = ANY (ARRAY['none'::character varying, 'minor'::character varying, 'major'::character varying]::text[]))
+Foreign-key constraints:
+    "story_events_title_id_fkey" FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+Referenced by:
+    TABLE "arc_events" CONSTRAINT "arc_events_event_id_fkey" FOREIGN KEY (event_id) REFERENCES story_events(event_id) ON DELETE CASCADE
+    TABLE "event_participants" CONSTRAINT "event_participants_event_id_fkey" FOREIGN KEY (event_id) REFERENCES story_events(event_id) ON DELETE CASCADE
+Triggers:
+    audit_story_events AFTER INSERT OR DELETE OR UPDATE ON story_events FOR EACH ROW EXECUTE FUNCTION trg_audit_row_change('event_id')
+
+                                   Table "public.bookmarks"
+    Column    |           Type           | Collation | Nullable |           Default            
+--------------+--------------------------+-----------+----------+------------------------------
+ bookmark_id  | integer                  |           | not null | generated always as identity
+ user_id      | integer                  |           | not null | 
+ title_id     | integer                  |           |          | 
+ character_id | integer                  |           |          | 
+ created_at   | timestamp with time zone |           | not null | now()
+Indexes:
+    "bookmarks_pkey" PRIMARY KEY, btree (bookmark_id)
+    "uq_bookmarks_user_character" UNIQUE CONSTRAINT, btree (user_id, character_id)
+    "uq_bookmarks_user_title" UNIQUE CONSTRAINT, btree (user_id, title_id)
+Check constraints:
+    "chk_bookmarks_one_target" CHECK (num_nonnulls(title_id, character_id) = 1)
+Foreign-key constraints:
+    "bookmarks_character_id_fkey" FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
+    "bookmarks_title_id_fkey" FOREIGN KEY (title_id) REFERENCES titles(title_id) ON DELETE CASCADE
+    "bookmarks_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+
+                  Table "public.arc_events"
+      Column      |  Type   | Collation | Nullable | Default 
+------------------+---------+-----------+----------+---------
+ arc_id           | integer |           | not null | 
+ event_id         | integer |           | not null | 
+ sequence_number  | integer |           | not null | 
+ development_note | text    |           |          | 
+Indexes:
+    "arc_events_pkey" PRIMARY KEY, btree (arc_id, event_id)
+    "idx_arc_events_event" btree (event_id)
+    "uq_arc_events_sequence" UNIQUE CONSTRAINT, btree (arc_id, sequence_number)
+Check constraints:
+    "chk_arc_events_sequence" CHECK (sequence_number > 0)
+Foreign-key constraints:
+    "arc_events_arc_id_fkey" FOREIGN KEY (arc_id) REFERENCES character_arcs(arc_id) ON DELETE CASCADE
+    "arc_events_event_id_fkey" FOREIGN KEY (event_id) REFERENCES story_events(event_id) ON DELETE CASCADE
+Triggers:
+    validate_arc_events BEFORE INSERT OR UPDATE ON arc_events FOR EACH ROW EXECUTE FUNCTION trg_validate_story_links()
+

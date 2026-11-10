@@ -1,0 +1,19 @@
+{
+  "name": "cinemind",
+  "version": "2.0.0",
+  "private": true,
+  "description": "CineMind 2.0 — fictional universe intelligence and story exploration platform (DBMS project)",
+  "scripts": {
+    "install:all": "npm --prefix apps/api install && npm --prefix apps/web install",
+    "db:setup": "powershell -NoProfile -ExecutionPolicy Bypass -File database/setup.ps1",
+    "db:setup:demo": "powershell -NoProfile -ExecutionPolicy Bypass -File database/setup.ps1 -Demo",
+    "db:reset": "powershell -NoProfile -ExecutionPolicy Bypass -File database/setup.ps1 -Reset",
+    "api": "npm --prefix apps/api run dev",
+    "web": "npm --prefix apps/web run dev",
+    "test": "npm --prefix apps/api test",
+    "typecheck": "npm --prefix apps/api run typecheck && npm --prefix apps/web run typecheck",
+    "build": "npm --prefix apps/api run build && npm --prefix apps/web run build",
+    "evidence": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-evidence.ps1",
+    "screenshots": "node scripts/capture-screenshots.mjs"
+  }
+}

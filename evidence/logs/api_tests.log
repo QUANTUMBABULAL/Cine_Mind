@@ -1,0 +1,211 @@
+﻿
+> cinemind-api@2.0.0 test
+> tsx --env-file=.env --test test/*.test.ts
+
+TAP version 13
+# Subtest: health and public discovery
+    # Subtest: health endpoint reaches PostgreSQL as the runtime role
+    ok 1 - health endpoint reaches PostgreSQL as the runtime role
+      ---
+      duration_ms: 21.7908
+      type: 'test'
+      ...
+    # Subtest: lists universes with counts
+    ok 2 - lists universes with counts
+      ---
+      duration_ms: 38.8737
+      type: 'test'
+      ...
+    # Subtest: universe detail includes titles and characters
+    ok 3 - universe detail includes titles and characters
+      ---
+      duration_ms: 202.0331
+      type: 'test'
+      ...
+    # Subtest: filters titles by genre and media type
+    ok 4 - filters titles by genre and media type
+      ---
+      duration_ms: 75.7336
+      type: 'test'
+      ...
+    # Subtest: sorts titles by rating
+    ok 5 - sorts titles by rating
+      ---
+      duration_ms: 31.4314
+      type: 'test'
+      ...
+    # Subtest: standalone title has no universe
+    ok 6 - standalone title has no universe
+      ---
+      duration_ms: 40.0535
+      type: 'test'
+      ...
+    # Subtest: search finds titles and characters
+    ok 7 - search finds titles and characters
+      ---
+      duration_ms: 256.7448
+      type: 'test'
+      ...
+    # Subtest: invalid query parameter returns 400 with details
+    ok 8 - invalid query parameter returns 400 with details
+      ---
+      duration_ms: 14.0432
+      type: 'test'
+      ...
+    # Subtest: unknown id returns 404 and malformed id returns 400
+    ok 9 - unknown id returns 404 and malformed id returns 400
+      ---
+      duration_ms: 56.3399
+      type: 'test'
+      ...
+    1..9
+ok 1 - health and public discovery
+  ---
+  duration_ms: 1276.168
+  type: 'suite'
+  ...
+# Subtest: characters and story
+    # Subtest: character profile has directed relationships and two arcs
+    ok 1 - character profile has directed relationships and two arcs
+      ---
+      duration_ms: 51.3018
+      type: 'test'
+      ...
+    # Subtest: timeline differs between chronology and release order
+    ok 2 - timeline differs between chronology and release order
+      ---
+      duration_ms: 41.2019
+      type: 'test'
+      ...
+    # Subtest: title events include participants
+    ok 3 - title events include participants
+      ---
+      duration_ms: 13.3185
+      type: 'test'
+      ...
+    # Subtest: event participants endpoint
+    ok 4 - event participants endpoint
+      ---
+      duration_ms: 22.3988
+      type: 'test'
+      ...
+    1..4
+ok 2 - characters and story
+  ---
+  duration_ms: 169.1454
+  type: 'suite'
+  ...
+# Subtest: authentication
+    # Subtest: register assigns the Viewer role
+    ok 1 - register assigns the Viewer role
+      ---
+      duration_ms: 310.6114
+      type: 'test'
+      ...
+    # Subtest: duplicate email is rejected with 409
+    ok 2 - duplicate email is rejected with 409
+      ---
+      duration_ms: 248.5031
+      type: 'test'
+      ...
+    # Subtest: weak input is rejected with 400
+    ok 3 - weak input is rejected with 400
+      ---
+      duration_ms: 11.1444
+      type: 'test'
+      ...
+    # Subtest: wrong password is rejected with 401
+    ok 4 - wrong password is rejected with 401
+      ---
+      duration_ms: 235.176
+      type: 'test'
+      ...
+    # Subtest: me returns the current user; missing or bad token returns 401
+    ok 5 - me returns the current user; missing or bad token returns 401
+      ---
+      duration_ms: 24.3583
+      type: 'test'
+      ...
+    1..5
+ok 3 - authentication
+  ---
+  duration_ms: 830.9712
+  type: 'suite'
+  ...
+# Subtest: user workspace
+    # Subtest: workspace requires authentication
+    ok 1 - workspace requires authentication
+      ---
+      duration_ms: 6.2884
+      type: 'test'
+      ...
+    # Subtest: bookmark add, duplicate, list and remove
+    ok 2 - bookmark add, duplicate, list and remove
+      ---
+      duration_ms: 111.8784
+      type: 'test'
+      ...
+    # Subtest: review create, update (trigger refreshes updated_at), invalid rating, delete
+    ok 3 - review create, update (trigger refreshes updated_at), invalid rating, delete
+      ---
+      duration_ms: 71.7764
+      type: 'test'
+      ...
+    # Subtest: watch progress upsert and validation
+    ok 4 - watch progress upsert and validation
+      ---
+      duration_ms: 35.8188
+      type: 'test'
+      ...
+    # Subtest: activity summary
+    ok 5 - activity summary
+      ---
+      duration_ms: 16.5665
+      type: 'test'
+      ...
+    1..5
+ok 4 - user workspace
+  ---
+  duration_ms: 257.9657
+  type: 'suite'
+  ...
+# Subtest: administration and authorization
+    # Subtest: viewer is forbidden from admin routes; anonymous is unauthorized
+    ok 1 - viewer is forbidden from admin routes; anonymous is unauthorized
+      ---
+      duration_ms: 16.7675
+      type: 'test'
+      ...
+    # Subtest: admin content CRUD with audit trail
+    ok 2 - admin content CRUD with audit trail
+      ---
+      duration_ms: 215.4676
+      type: 'test'
+      ...
+    # Subtest: admin cannot assign Admin to themselves
+    ok 3 - admin cannot assign Admin to themselves
+      ---
+      duration_ms: 18.39
+      type: 'test'
+      ...
+    # Subtest: admin grants and revokes a role; suspension blocks login immediately
+    ok 4 - admin grants and revokes a role; suspension blocks login immediately
+      ---
+      duration_ms: 284.5568
+      type: 'test'
+      ...
+    1..4
+ok 5 - administration and authorization
+  ---
+  duration_ms: 535.8652
+  type: 'suite'
+  ...
+1..5
+# tests 27
+# suites 5
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4808.6613
